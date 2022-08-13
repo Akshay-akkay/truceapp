@@ -58,10 +58,14 @@ void _handler(WebSocketChannel webSocket) {
 void main(List<String> args) async {
   /// Initialize the redis client.
   conn = RedisConnection();
-  command = await conn.connect('localhost', 6379);
+  command = await conn.connect(
+      'private-db-redis-blr1-45204-do-user-9760959-0.b.db.ondigitalocean.com',
+      25061);
 
   pubsubConn = RedisConnection();
-  pubsubCommand = await pubsubConn.connect('localhost', 6379);
+  pubsubCommand = await pubsubConn.connect(
+      'private-db-redis-blr1-45204-do-user-9760959-0.b.db.ondigitalocean.com',
+      25061);
   pubsub = PubSub(pubsubCommand);
 
   pubsub.subscribe(['counterUpdate']);
