@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+const socketURL = 'wss://coral-app-xuy44.ondigitalocean.app/ws';
+
 void main() {
+  print('Connecting to socket $socketURL');
   runApp(const MyApp());
 }
 
@@ -31,18 +34,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late WebSocketChannel channel;
+  int? _counter;
   @override
   void initState() {
     super.initState();
     channel = WebSocketChannel.connect(
-      Uri.parse('wss://echo.websocket.org'),
+      Uri.parse(socketURL),
     );
+
+    // channel.stream.listen((message) {
+    //   debugPrint('Received message: $message');
+    // });
+
+    channel.stream.listen((message) {
+      setState(() {
+        _counter = int.parse(message);
+      });
+    });
   }
 
   void _sendIncrementCommand() {
-    final channel = WebSocketChannel.connect(
-      Uri.parse('wss://echo.websocket.org'),
-    );
     channel.sink.add('increment');
   }
 
@@ -63,10 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'You have pushed the button this many times:\n And socker url is\n\n $socketURL',
             ),
             Text(
-              '0',
+              _counter?.toString() ?? '?',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
